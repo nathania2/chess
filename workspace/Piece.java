@@ -50,8 +50,8 @@ public class Piece {
     //return a list of every square that is "controlled" by this piece. A square is controlled
     //if the piece capture into it legally.
     public ArrayList<Square> getControlledSquares(Square[][] board, Square start) {
-     return null;
-    }
+      return getLegalMoves(null, start); // For now, assume it controls the same squares it can move to
+  }
     
 
     //TO BE IMPLEMENTED!
@@ -60,7 +60,32 @@ public class Piece {
     //returns an arraylist of squares which are legal to move to
     //please note that your piece must have some sort of logic. Just being able to move to every square on the board is not
     //going to score any points.
-    public ArrayList<Square> getLegalMoves(Board b, Square start){
-    	return null;
-    }
+    public ArrayList<Square> getLegalMoves(Board b, Square start) {
+      ArrayList<Square> legalMoves = new ArrayList<>();
+      int row = start.getRow();
+      int col = start.getCol();
+      Square[][] board = b.getSquareArray();
+
+      // Example logic for a King (moves one square in any direction)
+      int[] rowMoves = {-1, -1, -1, 0, 0, 1, 1, 1};
+      int[] colMoves = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+      for (int i = 0; i < 8; i++) {
+          int newRow = row + rowMoves[i];
+          int newCol = col + colMoves[i];
+
+          if (isValidMove(newRow, newCol, board)) {
+              legalMoves.add(board[newRow][newCol]);
+          }
+      }
+
+      return legalMoves;
+  }
+
+  // Checks if a move is valid (within bounds and not occupied by the same color)
+  private boolean isValidMove(int row, int col, Square[][] board) {
+      if (row < 0 || row >= 8 || col < 0 || col >= 8) return false; // Out of bounds
+      Square target = board[row][col];
+      return !target.isOccupied() || target.getOccupyingPiece().getColor() != this.color;
+  }
 }
